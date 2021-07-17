@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&display=swap");
+
 :root {
 	--playerO-color: rgb(84, 194, 84);
 	--playerX-color: rgb(230, 77, 77);
@@ -11,7 +13,7 @@
 	margin: 0 auto;
 	text-align: center;
 	color: rgb(36, 36, 36);
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: Cabin, Arial, sans-serif;
 	box-sizing: border-box;
 }
 
@@ -19,11 +21,12 @@ header {
 	background-color: var(--main-color);
 	padding: 20px;
 }
+
 #gameboard-container {
 	margin: 50px auto;
 }
 #gameboard-field {
-	margin: 20px auto;
+	margin: 15px auto;
 	width: 600px;
 	height: 600px;
 	display: grid;
@@ -37,21 +40,24 @@ header {
 	height: 200px;
 	font-size: 100px;
 	background-color: var(--sub-color);
-	/* background-color: #f2d14c; */
 	border: 2px solid rgb(255, 255, 255);
 	cursor: pointer;
 	align-items: center;
 	justify-content: center;
 }
 
-.field-hover:hover {
+.field-hover:hover,
+#restart-btn:hover {
 	background-color: var(--sub-color-hover);
 }
 
 #restart-btn {
+	margin: 5px auto;
 	display: none;
 	font-size: large;
+	border: 2px solid var(--shadow);
 	border-radius: 10px;
 	padding: 12px;
 	cursor: pointer;
+	background-color: var(--sub-color);
 }

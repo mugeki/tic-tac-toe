@@ -51,7 +51,7 @@ const gameController = (() => {
 	const playerO = Player("O");
 	let winner = null;
 	let round = 1;
-	let finished = false;
+
 	const playRound = (fieldIdx) => {
 		if (!gameFinished()) {
 			if (getPlayer() == playerX.symbol) {
@@ -73,8 +73,10 @@ const gameController = (() => {
 	};
 
 	const gameFinished = () => {
+		console.log(round);
+		let finished = false;
 		if (winner != null || round == 10) {
-			displayController.updateRestartBtn();
+			displayController.showRestartBtn();
 			finished = true;
 		}
 		displayController.updateBoardField(finished);
@@ -83,18 +85,20 @@ const gameController = (() => {
 	};
 
 	const checkWinner = (player) => {
-		let playerCombo = player.choice;
-		const winCombo = gameBoard.winCombo;
-		let intersectCombo = [];
-		for (let i = 0; i < winCombo.length; i++) {
-			intersectCombo = winCombo[i]
-				.filter((x) => {
-					return playerCombo.indexOf(x) != -1;
-				})
-				.sort();
-			if (isEqual(winCombo[i], intersectCombo)) {
-				winner = player;
-				winner.choice = intersectCombo;
+		if (player != null) {
+			let playerCombo = player.choice;
+			const winCombo = gameBoard.winCombo;
+			let intersectCombo = [];
+			for (let i = 0; i < winCombo.length; i++) {
+				intersectCombo = winCombo[i]
+					.filter((x) => {
+						return playerCombo.indexOf(x) != -1;
+					})
+					.sort();
+				if (isEqual(winCombo[i], intersectCombo)) {
+					winner = player;
+					winner.choice = intersectCombo;
+				}
 			}
 		}
 		return winner;
@@ -105,7 +109,6 @@ const gameController = (() => {
 	const reset = () => {
 		winner = null;
 		round = 1;
-		finished = false;
 		playerO.choice = [];
 		playerX.choice = [];
 	};
@@ -117,33 +120,31 @@ const gameController = (() => {
 
 const displayController = (() => {
 	const fields = document.querySelectorAll(".field");
-	const turnMsg = document.getElementById("msg-turn-span");
-	const turnMsgDefault = turnMsg.innerText;
-	const winMsg = document.getElementById("msg-win");
-	const winMsgDefault = winMsg.innerText;
+	const msg = document.getElementById("msg-turn");
+	const msgDefault = msg.innerText;
 	const restartBtn = document.getElementById("restart-btn");
 
 	restartBtn.addEventListener("click", () => {
+		displayController.updateBoardField(false);
 		gameBoard.reset();
 		gameController.reset();
-		turnMsg.innerText = turnMsgDefault;
-		winMsg.innerText = winMsgDefault;
+		msg.innerText = msgDefault;
 		restartBtn.style.display = "none";
 	});
 
 	const updateMessage = (isFinished) => {
 		if (!isFinished) {
-			turnMsg.innerText = `Player ${gameController.getPlayer()} turn`;
+			msg.innerText = `Player ${gameController.getPlayer()} turn`;
 		} else {
 			if (gameController.getWinner() != null) {
-				winMsg.innerText = `Player ${gameController.getWinner().symbol} wins!`;
+				msg.innerText = `Player ${gameController.getWinner().symbol} wins!`;
 			} else {
-				winMsg.innerText = "It's a Tie!";
+				msg.innerText = "It's a Tie!";
 			}
 		}
 	};
 
-	const updateRestartBtn = () => {
+	const showRestartBtn = () => {
 		restartBtn.style.display = "block";
 	};
 
@@ -161,11 +162,13 @@ const displayController = (() => {
 	};
 
 	const updateBoardField = (isFinished) => {
-		if (isFinished && gameController.getWinner() != null) {
-			let winCombo = gameController.getWinner().choice;
-			for (let i = 0; i < winCombo.length; i++) {
-				let fieldIdx = winCombo[i];
-				gameBoard.fields[fieldIdx].style.backgroundColor = "var(--sub-color-hover)";
+		if (isFinished) {
+			if (gameController.getWinner() != null) {
+				let winCombo = gameController.getWinner().choice;
+				for (let i = 0; i < winCombo.length; i++) {
+					let fieldIdx = winCombo[i];
+					gameBoard.fields[fieldIdx].style.backgroundColor = "var(--sub-color-hover)";
+				}
 			}
 			removeFieldHover();
 		} else {
@@ -173,5 +176,5 @@ const displayController = (() => {
 		}
 	};
 
-	return { updateMessage, updateRestartBtn, updateBoardField };
+	return { updateMessage, showRestartBtn, updateBoardField };
 })();
